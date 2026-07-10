@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import AdminLayout from "@/admin/AdminLayout";
 import TipTapEditor from "@/admin/TipTapEditor";
+import BlogPreviewModal from "@/admin/BlogPreviewModal";
 import { api, formatApiError } from "@/lib/api";
 import { ArrowLeft, ImageIcon, X, Eye, Save } from "lucide-react";
 
@@ -22,6 +23,7 @@ export default function AdminBlogEditor() {
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState("");
   const [slug, setSlug] = useState("");
+  const [previewOpen, setPreviewOpen] = useState(false);
   const fileRef = useRef(null);
   const excerptRef = useRef(null);
 
@@ -127,14 +129,23 @@ export default function AdminBlogEditor() {
           <span className="text-[11px] uppercase tracking-[0.18em] text-ink-3">
             {published ? "Published" : "Draft"}
           </span>
-          {!isNew && slug && (
+          <button
+            type="button"
+            onClick={() => setPreviewOpen(true)}
+            disabled={!title.trim()}
+            className="inline-flex items-center gap-2 text-[13px] text-ink-2 hover:text-ink disabled:opacity-40"
+            data-testid="preview-link"
+          >
+            <Eye className="w-4 h-4" /> Preview
+          </button>
+          {!isNew && slug && published && (
             <Link
               to={`/blogs/${slug}`}
               target="_blank"
-              className="inline-flex items-center gap-2 text-[13px] text-ink-2 hover:text-ink"
-              data-testid="preview-link"
+              className="inline-flex items-center gap-2 text-[13px] text-ink-3 hover:text-ink"
+              data-testid="view-live-link"
             >
-              <Eye className="w-4 h-4" /> Preview
+              View live
             </Link>
           )}
           <button
@@ -257,6 +268,16 @@ export default function AdminBlogEditor() {
           directly. Select text for formatting.
         </div>
       </div>
+
+      <BlogPreviewModal
+        open={previewOpen}
+        onClose={() => setPreviewOpen(false)}
+        title={title}
+        excerpt={excerpt}
+        tag={tag}
+        content={content}
+        coverImage={coverImage}
+      />
     </AdminLayout>
   );
 }

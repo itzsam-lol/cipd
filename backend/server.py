@@ -258,6 +258,14 @@ class EventIn(BaseModel):
     accent: str = "teal"  # teal | pink | purple
 
 
+class ProjectIn(BaseModel):
+    title: str
+    tag: str = ""
+    sub: str = ""
+    color: str = "#0FB5A8"
+    image: Optional[str] = None
+
+
 class AnnouncementIn(BaseModel):
     text: str
     link: Optional[str] = None
@@ -502,6 +510,99 @@ async def delete_event(request: Request, event_id: str, user: dict = Depends(get
     if res.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Event not found")
     await audit_log(request, "event_delete", user=user, target=event_id)
+    return {"ok": True}
+
+
+# ---------- Projects ----------
+
+@api_router.get("/projects")
+async def list_projects():
+    cursor = db.projects.find({}).sort("order", 1)
+    return [serialize_doc(d) async for d in cursor]
+
+
+@api_router.get("/admin/projects")
+async def list_all_projects(user: dict = Depends(get_current_user)):
+    cursor = db.projects.find({}).sort("order", 1)
+    return [serialize_doc(d) async for d in cursor]
+
+
+@api_router.get("/admin/projects/{project_id}")
+async def get_project_admin(project_id: str, user: dict = Depends(get_current_user)):
+    doc = await db.projects.find_one({"id": project_id})
+    if not doc:
+        raise HTTPException(status_code=404, detail="Project not found")
+    return serialize_doc(doc)
+
+
+@api_router.post("/admin/projects")
+@limiter.limit("30/minute")
+async def create_project(request: Request, body: ProjectIn, user: dict = Depends(get_current_user)):
+    now = datetime.now(timezone.utc).isoformat()
+    max_order_doc = await db.projects.find_one(sort=[("order", -1)])
+    next_order = (max_order_doc["order"] + 1) if max_order_doc else 0
+    doc = {
+        "id": str(uuid.uuid4()),
+        "title": body.title.strip() or "Untitled project",
+        "tag": body.tag or "",
+        "sub": body.sub or "",
+        "color": body.color or "#0FB5A8",
+        "image": body.image,
+        "order": next_order,
+        "createdAt": now,
+        "updatedAt": now,
+    }
+    await db.projects.insert_one(doc)
+    await audit_log(request, "project_create", user=user, target=doc["id"], detail=doc["title"])
+    return serialize_doc(doc)
+
+
+@api_router.put("/admin/projects/{project_id}")
+@limiter.limit("30/minute")
+async def update_project(request: Request, project_id: str, body: ProjectIn, user: dict = Depends(get_current_user)):
+    existing = await db.projects.find_one({"id": project_id})
+    if not existing:
+        raise HTTPException(status_code=404, detail="Project not found")
+    updates = {
+        "title": body.title.strip() or existing["title"],
+        "tag": body.tag or "",
+        "sub": body.sub or "",
+        "color": body.color or "#0FB5A8",
+        "image": body.image,
+        "updatedAt": datetime.now(timezone.utc).isoformat(),
+    }
+    await db.projects.update_one({"id": project_id}, {"$set": updates})
+    doc = await db.projects.find_one({"id": project_id})
+    await audit_log(request, "project_update", user=user, target=project_id, detail=updates.get("title", ""))
+    return serialize_doc(doc)
+
+
+@api_router.put("/admin/projects/{project_id}/move")
+@limiter.limit("30/minute")
+async def move_project(request: Request, project_id: str, direction: str = Query(...), user: dict = Depends(get_current_user)):
+    if direction not in ("up", "down"):
+        raise HTTPException(status_code=400, detail="direction must be 'up' or 'down'")
+    current = await db.projects.find_one({"id": project_id})
+    if not current:
+        raise HTTPException(status_code=404, detail="Project not found")
+    neighbor = await db.projects.find_one(
+        {"order": {"$lt": current["order"]} if direction == "up" else {"$gt": current["order"]}},
+        sort=[("order", -1 if direction == "up" else 1)],
+    )
+    if not neighbor:
+        return {"ok": True}
+    await db.projects.update_one({"id": current["id"]}, {"$set": {"order": neighbor["order"]}})
+    await db.projects.update_one({"id": neighbor["id"]}, {"$set": {"order": current["order"]}})
+    return {"ok": True}
+
+
+@api_router.delete("/admin/projects/{project_id}")
+@limiter.limit("30/minute")
+async def delete_project(request: Request, project_id: str, user: dict = Depends(get_current_user)):
+    res = await db.projects.delete_one({"id": project_id})
+    if res.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Project not found")
+    await audit_log(request, "project_delete", user=user, target=project_id)
     return {"ok": True}
 
 
