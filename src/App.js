@@ -10,6 +10,8 @@ import Login from "@/pages/Login";
 import AdminDashboard from "@/admin/AdminDashboard";
 import AdminBlogs from "@/admin/AdminBlogs";
 import AdminBlogEditor from "@/admin/AdminBlogEditor";
+import AdminProjects from "@/admin/AdminProjects";
+import AdminProjectEditor from "@/admin/AdminProjectEditor";
 import AdminEvents from "@/admin/AdminEvents";
 import AdminEventEditor from "@/admin/AdminEventEditor";
 import AdminAnnouncements from "@/admin/AdminAnnouncements";
@@ -18,12 +20,14 @@ import ProtectedRoute from "@/auth/ProtectedRoute";
 import { AuthProvider } from "@/auth/AuthContext";
 import Cursor from "@/components/Cursor";
 import SmoothScroll from "@/components/SmoothScroll";
+import ScrollToTop from "@/components/ScrollToTop";
 
 function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
         <SmoothScroll />
+        <ScrollToTop />
         <Cursor />
         <Routes>
           <Route path="/" element={<Home />} />
@@ -61,6 +65,30 @@ function App() {
             element={
               <ProtectedRoute>
                 <AdminBlogEditor />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/projects"
+            element={
+              <ProtectedRoute>
+                <AdminProjects />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/projects/new"
+            element={
+              <ProtectedRoute>
+                <AdminProjectEditor />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/projects/edit/:id"
+            element={
+              <ProtectedRoute>
+                <AdminProjectEditor />
               </ProtectedRoute>
             }
           />

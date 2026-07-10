@@ -2,7 +2,7 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "@/auth/AuthContext";
 import Logo from "@/components/Logo";
 import ThemeToggle from "@/components/ThemeToggle";
-import { LogOut, LayoutDashboard, FileText, PlusCircle, Calendar, Megaphone, Inbox } from "lucide-react";
+import { LogOut, LayoutDashboard, FileText, PlusCircle, Calendar, Megaphone, Inbox, Layers } from "lucide-react";
 
 export default function AdminLayout({ children, title }) {
   const { user, logout } = useAuth();
@@ -40,6 +40,9 @@ export default function AdminLayout({ children, title }) {
           </NavLink>
           <NavLink to="/admin/blogs/new" className={linkClass} data-testid="admin-nav-new">
             <PlusCircle className="w-4 h-4" /> New blog
+          </NavLink>
+          <NavLink to="/admin/projects" className={linkClass} data-testid="admin-nav-projects">
+            <Layers className="w-4 h-4" /> Projects
           </NavLink>
           <NavLink to="/admin/events" className={linkClass} data-testid="admin-nav-events">
             <Calendar className="w-4 h-4" /> Events
