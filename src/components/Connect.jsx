@@ -101,9 +101,7 @@ export default function Connect() {
 
         <div className="mt-10 flex flex-col sm:flex-row gap-8 sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
-            <span className="bg-white rounded-md p-1.5">
-              <Logo className="h-7 w-auto" />
-            </span>
+            <Logo className="h-7 w-auto" />
             <span className="text-[11px] uppercase tracking-[0.22em] text-white/40 ml-2">
               IIIT Delhi · 2026
             </span>

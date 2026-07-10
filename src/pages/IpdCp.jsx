@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import Nav from "@/components/Nav";
 import Connect from "@/components/Connect";
+import BlobScene from "@/components/BlobScene";
 
 const ease = [0.16, 1, 0.3, 1];
 
@@ -201,11 +202,7 @@ export default function IpdCp() {
               data-testid="ipdcp-logo"
               className="relative w-[320px] h-[320px] sm:w-[420px] sm:h-[420px] lg:w-[480px] lg:h-[480px] shrink-0 mx-auto lg:mx-0"
             >
-              <img
-                src="https://customer-assets.emergentagent.com/job_cipd-forge/artifacts/8avxrmvo_magic_edit%23TUFITTdOdHZJVUEjMSM4YzcxNmI2YjI3MmZiZjE4ODA5YmUyYTVmMGQ4YzAyMCM1MjkjI1RSQU5TRk9STUFUSU9OX1JFUVVFU1Q.png"
-                alt="iPD-CP"
-                className="relative w-full h-full object-contain"
-              />
+              <BlobScene />
             </motion.div>
           </div>
         </div>

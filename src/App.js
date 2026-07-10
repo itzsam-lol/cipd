@@ -9,6 +9,9 @@ import Login from "@/pages/Login";
 import AdminDashboard from "@/admin/AdminDashboard";
 import AdminBlogs from "@/admin/AdminBlogs";
 import AdminBlogEditor from "@/admin/AdminBlogEditor";
+import AdminEvents from "@/admin/AdminEvents";
+import AdminEventEditor from "@/admin/AdminEventEditor";
+import AdminAnnouncements from "@/admin/AdminAnnouncements";
 import ProtectedRoute from "@/auth/ProtectedRoute";
 import { AuthProvider } from "@/auth/AuthContext";
 import Cursor from "@/components/Cursor";
@@ -55,6 +58,38 @@ function App() {
             element={
               <ProtectedRoute>
                 <AdminBlogEditor />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/events"
+            element={
+              <ProtectedRoute>
+                <AdminEvents />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/events/new"
+            element={
+              <ProtectedRoute>
+                <AdminEventEditor />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/events/edit/:id"
+            element={
+              <ProtectedRoute>
+                <AdminEventEditor />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/announcements"
+            element={
+              <ProtectedRoute>
+                <AdminAnnouncements />
               </ProtectedRoute>
             }
           />

@@ -187,7 +187,7 @@ export default function BlobScene() {
     <div
       ref={mountRef}
       data-testid="hero-blob-canvas"
-      className="absolute inset-0 w-full h-full"
+      className="relative w-full h-full"
       style={{ background: "transparent" }}
     />
   );
