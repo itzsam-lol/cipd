@@ -14,6 +14,9 @@ Routes:
 - /api/admin/events         — protected CRUD
 - /api/announcements        — public, list active ticker headlines
 - /api/admin/announcements  — protected CRUD
+- /api/apply                — public POST, iPD-CP application
+- /api/share-idea           — public POST, share-an-idea form
+- /api/admin/submissions    — protected, list/read/delete form submissions
 - /api/admin/upload         — protected, upload media to S3
 - /api/files/{path:path}    — public proxy that streams stored media
 """
@@ -259,6 +262,14 @@ class AnnouncementIn(BaseModel):
     text: str
     link: Optional[str] = None
     active: bool = True
+
+
+class SubmissionIn(BaseModel):
+    name: str
+    email: str
+    phone: Optional[str] = None
+    message: str = ""
+    link: Optional[str] = None
 
 
 def serialize_doc(doc: dict) -> dict:
@@ -555,6 +566,71 @@ async def delete_announcement(request: Request, announcement_id: str, user: dict
     return {"ok": True}
 
 
+# ---------- Submissions (iPD-CP applications + Share-an-Idea) ----------
+
+async def create_submission(request: Request, sub_type: str, body: SubmissionIn) -> dict:
+    email = (body.email or "").strip().lower()
+    if "@" not in email or "." not in email.split("@")[-1]:
+        raise HTTPException(status_code=400, detail="Enter a valid email address")
+    now = datetime.now(timezone.utc).isoformat()
+    doc = {
+        "id": str(uuid.uuid4()),
+        "type": sub_type,
+        "name": body.name.strip(),
+        "email": email,
+        "phone": (body.phone or "").strip() or None,
+        "message": (body.message or "").strip(),
+        "link": (body.link or "").strip() or None,
+        "read": False,
+        "createdAt": now,
+    }
+    await db.submissions.insert_one(doc)
+    await audit_log(request, f"submission_{sub_type}", target=doc["id"], detail=email)
+    return serialize_doc(doc)
+
+
+@api_router.post("/apply")
+@limiter.limit("5/minute")
+async def apply_ipdcp(request: Request, body: SubmissionIn):
+    doc = await create_submission(request, "ipdcp_application", body)
+    return {"ok": True, "id": doc["id"]}
+
+
+@api_router.post("/share-idea")
+@limiter.limit("5/minute")
+async def share_idea(request: Request, body: SubmissionIn):
+    doc = await create_submission(request, "share_idea", body)
+    return {"ok": True, "id": doc["id"]}
+
+
+@api_router.get("/admin/submissions")
+async def list_submissions(
+    type: Optional[str] = Query(None), user: dict = Depends(get_current_user)
+):
+    q = {"type": type} if type else {}
+    cursor = db.submissions.find(q).sort("createdAt", -1)
+    return [serialize_doc(d) async for d in cursor]
+
+
+@api_router.put("/admin/submissions/{submission_id}/read")
+@limiter.limit("60/minute")
+async def mark_submission_read(request: Request, submission_id: str, user: dict = Depends(get_current_user)):
+    res = await db.submissions.update_one({"id": submission_id}, {"$set": {"read": True}})
+    if res.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Submission not found")
+    return {"ok": True}
+
+
+@api_router.delete("/admin/submissions/{submission_id}")
+@limiter.limit("30/minute")
+async def delete_submission(request: Request, submission_id: str, user: dict = Depends(get_current_user)):
+    res = await db.submissions.delete_one({"id": submission_id})
+    if res.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Submission not found")
+    await audit_log(request, "submission_delete", user=user, target=submission_id)
+    return {"ok": True}
+
+
 # ---------- Media Upload ----------
 
 @api_router.post("/admin/upload")
@@ -715,6 +791,8 @@ async def on_startup():
     await db.blogs.create_index("published")
     await db.events.create_index("date")
     await db.announcements.create_index("active")
+    await db.submissions.create_index("type")
+    await db.submissions.create_index("createdAt")
     await db.audit_logs.create_index("timestamp")
     await db.audit_logs.create_index("actor_email")
     await seed_admin()
