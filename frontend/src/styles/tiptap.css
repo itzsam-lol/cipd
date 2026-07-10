@@ -93,6 +93,7 @@
     outline: 0;
     background: transparent;
     resize: none;
+    overflow: hidden;
     font-family: "Source Serif 4", Georgia, serif;
     font-style: italic;
     font-size: 22px;

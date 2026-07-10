@@ -14,9 +14,11 @@ import {
   CheckCircle2,
   Sparkles,
 } from "lucide-react";
+import { useState } from "react";
 import Nav from "@/components/Nav";
 import Connect from "@/components/Connect";
 import BlobScene from "@/components/BlobScene";
+import ApplyModal from "@/components/ApplyModal";
 
 const ease = [0.16, 1, 0.3, 1];
 
@@ -113,6 +115,8 @@ function PriceRow({ amount, sub, fee, note }) {
 }
 
 export default function IpdCp() {
+  const [applyOpen, setApplyOpen] = useState(false);
+
   return (
     <main
       data-testid="ipdcp-page"
@@ -120,6 +124,7 @@ export default function IpdCp() {
       style={{ overflowX: "clip", background: "var(--bg)" }}
     >
       <Nav />
+      <ApplyModal open={applyOpen} onClose={() => setApplyOpen(false)} />
 
       {/* HERO 01 / 08 */}
       <section
@@ -580,8 +585,9 @@ export default function IpdCp() {
           </p>
 
           <div className="mt-12 flex flex-wrap items-center gap-6">
-            <a
-              href="mailto:cipd@iiitd.ac.in?subject=iPD-CP%20application"
+            <button
+              type="button"
+              onClick={() => setApplyOpen(true)}
               data-testid="ipdcp-apply-btn"
               className="group inline-flex items-center gap-3 rounded-full pl-7 pr-3 py-3 text-[14px] font-medium"
               style={{ background: "var(--ink)", color: "var(--bg)" }}
@@ -593,7 +599,7 @@ export default function IpdCp() {
               >
                 <ArrowUpRight className="w-4 h-4" />
               </span>
-            </a>
+            </button>
             <Link
               to="/#events"
               data-testid="ipdcp-events-link"

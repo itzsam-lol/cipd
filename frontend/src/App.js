@@ -5,6 +5,7 @@ import Home from "@/pages/Home";
 import IpdCp from "@/pages/IpdCp";
 import Blogs from "@/pages/Blogs";
 import BlogPost from "@/pages/BlogPost";
+import EventsPage from "@/pages/EventsPage";
 import Login from "@/pages/Login";
 import AdminDashboard from "@/admin/AdminDashboard";
 import AdminBlogs from "@/admin/AdminBlogs";
@@ -12,6 +13,7 @@ import AdminBlogEditor from "@/admin/AdminBlogEditor";
 import AdminEvents from "@/admin/AdminEvents";
 import AdminEventEditor from "@/admin/AdminEventEditor";
 import AdminAnnouncements from "@/admin/AdminAnnouncements";
+import AdminSubmissions from "@/admin/AdminSubmissions";
 import ProtectedRoute from "@/auth/ProtectedRoute";
 import { AuthProvider } from "@/auth/AuthContext";
 import Cursor from "@/components/Cursor";
@@ -26,6 +28,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/ipd-cp" element={<IpdCp />} />
+          <Route path="/events" element={<EventsPage />} />
           <Route path="/blogs" element={<Blogs />} />
           <Route path="/blogs/:slug" element={<BlogPost />} />
           <Route path="/login" element={<Login />} />
@@ -90,6 +93,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <AdminAnnouncements />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/submissions"
+            element={
+              <ProtectedRoute>
+                <AdminSubmissions />
               </ProtectedRoute>
             }
           />

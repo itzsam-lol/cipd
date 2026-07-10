@@ -2,49 +2,58 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import AdminLayout from "@/admin/AdminLayout";
 import { api } from "@/lib/api";
-import { FileText, Eye, EyeOff, ArrowRight } from "lucide-react";
+import { FileText, Eye, EyeOff, ArrowRight, Inbox } from "lucide-react";
 
 export default function AdminDashboard() {
   const [blogs, setBlogs] = useState([]);
+  const [submissions, setSubmissions] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api
-      .get("/admin/blogs")
-      .then((r) => setBlogs(r.data))
+    Promise.all([api.get("/admin/blogs"), api.get("/admin/submissions")])
+      .then(([b, s]) => {
+        setBlogs(b.data);
+        setSubmissions(s.data);
+      })
       .finally(() => setLoading(false));
   }, []);
 
   const published = blogs.filter((b) => b.published).length;
   const drafts = blogs.length - published;
+  const unread = submissions.filter((s) => !s.read).length;
   const recent = blogs.slice(0, 5);
 
   return (
     <AdminLayout title="Dashboard">
-      <div className="grid sm:grid-cols-3 gap-5 mb-12">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-12">
         {[
           { label: "All blogs", value: blogs.length, icon: FileText },
           { label: "Published", value: published, icon: Eye },
           { label: "Drafts", value: drafts, icon: EyeOff },
-        ].map((s) => (
-          <div
-            key={s.label}
-            className="p-6 rounded-2xl border"
-            style={{ borderColor: "var(--border-soft)" }}
-            data-testid={`stat-${s.label.toLowerCase()}`}
-          >
-            <s.icon className="w-5 h-5 mb-6 text-ink-3" />
-            <div
-              className="font-display font-extrabold tracking-[-0.03em] leading-none"
-              style={{ fontSize: "clamp(2rem, 3vw, 2.6rem)" }}
+          { label: "New submissions", value: unread, icon: Inbox, to: "/admin/submissions" },
+        ].map((s) => {
+          const Wrapper = s.to ? Link : "div";
+          return (
+            <Wrapper
+              key={s.label}
+              to={s.to}
+              className="p-6 rounded-2xl border block"
+              style={{ borderColor: "var(--border-soft)" }}
+              data-testid={`stat-${s.label.toLowerCase().replace(/\s+/g, "-")}`}
             >
-              {loading ? "—" : s.value}
-            </div>
-            <div className="mt-3 text-[11px] uppercase tracking-[0.22em] text-ink-3">
-              {s.label}
-            </div>
-          </div>
-        ))}
+              <s.icon className="w-5 h-5 mb-6 text-ink-3" />
+              <div
+                className="font-display font-extrabold tracking-[-0.03em] leading-none"
+                style={{ fontSize: "clamp(2rem, 3vw, 2.6rem)" }}
+              >
+                {loading ? "—" : s.value}
+              </div>
+              <div className="mt-3 text-[11px] uppercase tracking-[0.22em] text-ink-3">
+                {s.label}
+              </div>
+            </Wrapper>
+          );
+        })}
       </div>
 
       <div className="flex items-end justify-between mb-6">

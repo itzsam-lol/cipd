@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { api } from "@/lib/api";
 
@@ -24,7 +25,7 @@ export default function Events() {
   useEffect(() => {
     api
       .get("/events")
-      .then((r) => setEvents(r.data))
+      .then((r) => setEvents(r.data.slice(0, 3)))
       .finally(() => setLoading(false));
   }, []);
 
@@ -48,12 +49,19 @@ export default function Events() {
               <span className="text-ink-3">Build something.</span>
             </h2>
           </div>
-          <div className="lg:col-span-5 flex lg:items-end">
-            <p className="text-[17px] leading-[1.6] text-ink-2 max-w-[420px]">
+          <div className="lg:col-span-5 flex lg:flex-col lg:items-end lg:justify-end gap-6">
+            <p className="text-[17px] leading-[1.6] text-ink-2 max-w-[420px] lg:text-right">
               We host hands-on workshops, all-night hackathons and an annual
               demo day. Open to every IIIT Delhi student, and most of them to
               the wider community too.
             </p>
+            <Link
+              to="/events"
+              data-testid="events-view-all"
+              className="link-underline text-[13.5px] text-ink-2 shrink-0"
+            >
+              View all events →
+            </Link>
           </div>
         </div>
 
