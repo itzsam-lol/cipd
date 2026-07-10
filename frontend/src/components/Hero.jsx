@@ -9,7 +9,7 @@ export default function Hero() {
     <section
       id="top"
       data-testid="hero-section"
-      className="relative min-h-[100svh] pt-28 pb-16 px-6 sm:px-10 overflow-hidden"
+      className="relative min-h-[100svh] pt-32 pb-16 px-6 sm:px-10 overflow-hidden"
     >
       {/* faint accent blobs */}
       <div
@@ -106,11 +106,8 @@ export default function Hero() {
         </div>
 
         {/* 3D Blob */}
-        <div className="lg:col-span-5 relative h-[420px] sm:h-[520px] lg:h-[640px]">
+        <div className="lg:col-span-5 relative h-[460px] sm:h-[560px] lg:h-[680px] p-6 sm:p-10">
           <BlobScene />
-          <div className="absolute bottom-3 right-3 text-[10px] uppercase tracking-[0.22em] text-ink-3">
-            Interactive · move your cursor
-          </div>
         </div>
       </div>
 

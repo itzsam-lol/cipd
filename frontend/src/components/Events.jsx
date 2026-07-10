@@ -1,45 +1,33 @@
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { api } from "@/lib/api";
 
-const EVENTS = [
-  {
-    date: "14 Mar",
-    year: "2026",
-    title: "Hardware Hack Night",
-    where: "R&D Block · 7 PM",
-    blurb:
-      "An overnight build sprint. Bring an idea, leave with a working prototype and pizza grease on your hands.",
-    accent: "var(--teal)",
-  },
-  {
-    date: "02 Apr",
-    year: "2026",
-    title: "iPD-CP Cohort 03 Demo Day",
-    where: "Auditorium · 6 PM",
-    blurb:
-      "24 weeks of work — 12 teams, 12 production-grade boards, judged by industry & VCs.",
-    accent: "var(--pink)",
-  },
-  {
-    date: "21 Apr",
-    year: "2026",
-    title: "PCB Design Masterclass",
-    where: "Fab Lab · 4 PM",
-    blurb:
-      "A four-hour deep dive into impedance control, layer stack-up, and DFM with our resident hardware lead.",
-    accent: "var(--purple)",
-  },
-  {
-    date: "31 May",
-    year: "2026",
-    title: "iPD-CP Cohort 04 — Applications Close",
-    where: "Online",
-    blurb:
-      "The last day to apply to our flagship 24-week intensive product development certificate programme.",
-    accent: "var(--teal)",
-  },
-];
+const ACCENT_VARS = {
+  teal: "var(--teal)",
+  pink: "var(--pink)",
+  purple: "var(--purple)",
+};
+
+function formatDate(iso) {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return { day: "", year: "" };
+  return {
+    day: d.toLocaleDateString("en-IN", { day: "2-digit", month: "short" }),
+    year: String(d.getFullYear()),
+  };
+}
 
 export default function Events() {
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    api
+      .get("/events")
+      .then((r) => setEvents(r.data))
+      .finally(() => setLoading(false));
+  }, []);
+
   return (
     <section
       id="events"
@@ -69,64 +57,84 @@ export default function Events() {
           </div>
         </div>
 
-        <div className="relative">
-          {/* vertical thread */}
-          <div className="absolute left-[22px] sm:left-[110px] top-0 bottom-0 w-px bg-ink/10" />
+        {loading && (
+          <div className="py-16 text-center text-ink-3 text-[13px]">Loading…</div>
+        )}
 
-          <ul className="space-y-20 sm:space-y-28">
-            {EVENTS.map((e, i) => (
-              <motion.li
-                key={e.title}
-                data-testid={`event-${i}`}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-80px" }}
-                transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-                className="relative pl-14 sm:pl-[170px]"
-              >
-                {/* node */}
-                <span
-                  className="absolute left-[14px] sm:left-[102px] top-2 w-4 h-4 rounded-full"
-                  style={{ background: e.accent }}
-                />
-                <span
-                  className="absolute left-[6px] sm:left-[94px] top-[-6px] w-8 h-8 rounded-full"
-                  style={{ background: e.accent, opacity: 0.15 }}
-                />
+        {!loading && events.length === 0 && (
+          <div className="py-16 text-center text-ink-3 text-[13.5px]">
+            No upcoming events right now. Check back soon.
+          </div>
+        )}
 
-                {/* date */}
-                <div className="absolute left-0 top-0 hidden sm:block w-[80px]">
-                  <div
-                    className="font-display font-extrabold tracking-[-0.03em] leading-none text-ink"
-                    style={{ fontSize: "clamp(1.5rem, 2.2vw, 2.1rem)" }}
+        {!loading && events.length > 0 && (
+          <div className="relative">
+            {/* vertical thread */}
+            <div className="absolute left-[22px] sm:left-[110px] top-0 bottom-0 w-px bg-ink/10" />
+
+            <ul className="space-y-20 sm:space-y-28">
+              {events.map((e, i) => {
+                const { day, year } = formatDate(e.date);
+                const accent = ACCENT_VARS[e.accent] || ACCENT_VARS.teal;
+                return (
+                  <motion.li
+                    key={e.id}
+                    data-testid={`event-${i}`}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-80px" }}
+                    transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                    className="relative pl-14 sm:pl-[170px]"
                   >
-                    {e.date}
-                  </div>
-                  <div className="text-[12px] text-ink-3 mt-1 tracking-wider">{e.year}</div>
-                </div>
+                    {/* node */}
+                    <span
+                      className="absolute left-[14px] sm:left-[102px] top-2 w-4 h-4 rounded-full"
+                      style={{ background: accent }}
+                    />
+                    <span
+                      className="absolute left-[6px] sm:left-[94px] top-[-6px] w-8 h-8 rounded-full"
+                      style={{ background: accent, opacity: 0.15 }}
+                    />
 
-                {/* content */}
-                <div className="max-w-[640px]">
-                  <div className="text-[11px] uppercase tracking-[0.22em] text-ink-3 mb-3 sm:hidden">
-                    {e.date} · {e.year}
-                  </div>
-                  <h3
-                    className="font-display font-bold tracking-[-0.02em] text-ink leading-[1.05]"
-                    style={{ fontSize: "clamp(1.75rem, 3.4vw, 3rem)" }}
-                  >
-                    {e.title}
-                  </h3>
-                  <div className="text-[13px] uppercase tracking-[0.2em] text-ink-3 mt-3">
-                    {e.where}
-                  </div>
-                  <p className="mt-5 text-[16px] md:text-[17px] leading-[1.6] text-ink-2">
-                    {e.blurb}
-                  </p>
-                </div>
-              </motion.li>
-            ))}
-          </ul>
-        </div>
+                    {/* date */}
+                    <div className="absolute left-0 top-0 hidden sm:block w-[80px]">
+                      <div
+                        className="font-display font-extrabold tracking-[-0.03em] leading-none text-ink"
+                        style={{ fontSize: "clamp(1.5rem, 2.2vw, 2.1rem)" }}
+                      >
+                        {day}
+                      </div>
+                      <div className="text-[12px] text-ink-3 mt-1 tracking-wider">{year}</div>
+                    </div>
+
+                    {/* content */}
+                    <div className="max-w-[640px]">
+                      <div className="text-[11px] uppercase tracking-[0.22em] text-ink-3 mb-3 sm:hidden">
+                        {day} · {year}
+                      </div>
+                      <h3
+                        className="font-display font-bold tracking-[-0.02em] text-ink leading-[1.05]"
+                        style={{ fontSize: "clamp(1.75rem, 3.4vw, 3rem)" }}
+                      >
+                        {e.title}
+                      </h3>
+                      {e.location && (
+                        <div className="text-[13px] uppercase tracking-[0.2em] text-ink-3 mt-3">
+                          {e.location}
+                        </div>
+                      )}
+                      {e.description && (
+                        <p className="mt-5 text-[16px] md:text-[17px] leading-[1.6] text-ink-2">
+                          {e.description}
+                        </p>
+                      )}
+                    </div>
+                  </motion.li>
+                );
+              })}
+            </ul>
+          </div>
+        )}
       </div>
     </section>
   );
