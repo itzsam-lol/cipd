@@ -10,6 +10,10 @@ Routes:
 - /api/admin/blogs          — protected POST, create
 - /api/admin/blogs/{id}     — protected PUT, update
 - /api/admin/blogs/{id}     — protected DELETE
+- /api/events               — public, list events
+- /api/admin/events         — protected CRUD
+- /api/announcements        — public, list active ticker headlines
+- /api/admin/announcements  — protected CRUD
 - /api/admin/upload         — protected, upload media to S3
 - /api/files/{path:path}    — public proxy that streams stored media
 """
@@ -243,9 +247,25 @@ class BlogOut(BaseModel):
     updatedAt: str
 
 
-def serialize_blog(doc: dict) -> dict:
-    doc = {k: v for k, v in doc.items() if k != "_id"}
-    return doc
+class EventIn(BaseModel):
+    date: str  # ISO date, e.g. "2026-03-14"
+    title: str
+    location: str = ""
+    description: str = ""
+    accent: str = "teal"  # teal | pink | purple
+
+
+class AnnouncementIn(BaseModel):
+    text: str
+    link: Optional[str] = None
+    active: bool = True
+
+
+def serialize_doc(doc: dict) -> dict:
+    return {k: v for k, v in doc.items() if k != "_id"}
+
+
+serialize_blog = serialize_doc
 
 
 async def ensure_unique_slug(base: str, exclude_id: Optional[str] = None) -> str:
@@ -400,6 +420,138 @@ async def delete_blog(request: Request, blog_id: str, user: dict = Depends(get_c
     if res.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Blog not found")
     await audit_log(request, "blog_delete", user=user, target=blog_id)
+    return {"ok": True}
+
+
+# ---------- Events ----------
+
+@api_router.get("/events")
+async def list_events():
+    cursor = db.events.find({}).sort("date", 1)
+    return [serialize_doc(d) async for d in cursor]
+
+
+@api_router.get("/admin/events")
+async def list_all_events(user: dict = Depends(get_current_user)):
+    cursor = db.events.find({}).sort("date", 1)
+    return [serialize_doc(d) async for d in cursor]
+
+
+@api_router.get("/admin/events/{event_id}")
+async def get_event_admin(event_id: str, user: dict = Depends(get_current_user)):
+    doc = await db.events.find_one({"id": event_id})
+    if not doc:
+        raise HTTPException(status_code=404, detail="Event not found")
+    return serialize_doc(doc)
+
+
+@api_router.post("/admin/events")
+@limiter.limit("30/minute")
+async def create_event(request: Request, body: EventIn, user: dict = Depends(get_current_user)):
+    now = datetime.now(timezone.utc).isoformat()
+    doc = {
+        "id": str(uuid.uuid4()),
+        "date": body.date,
+        "title": body.title.strip() or "Untitled event",
+        "location": body.location or "",
+        "description": body.description or "",
+        "accent": body.accent or "teal",
+        "createdAt": now,
+        "updatedAt": now,
+    }
+    await db.events.insert_one(doc)
+    await audit_log(request, "event_create", user=user, target=doc["id"], detail=doc["title"])
+    return serialize_doc(doc)
+
+
+@api_router.put("/admin/events/{event_id}")
+@limiter.limit("30/minute")
+async def update_event(request: Request, event_id: str, body: EventIn, user: dict = Depends(get_current_user)):
+    existing = await db.events.find_one({"id": event_id})
+    if not existing:
+        raise HTTPException(status_code=404, detail="Event not found")
+    updates = {
+        "date": body.date,
+        "title": body.title.strip() or existing["title"],
+        "location": body.location or "",
+        "description": body.description or "",
+        "accent": body.accent or "teal",
+        "updatedAt": datetime.now(timezone.utc).isoformat(),
+    }
+    await db.events.update_one({"id": event_id}, {"$set": updates})
+    doc = await db.events.find_one({"id": event_id})
+    await audit_log(request, "event_update", user=user, target=event_id, detail=updates.get("title", ""))
+    return serialize_doc(doc)
+
+
+@api_router.delete("/admin/events/{event_id}")
+@limiter.limit("30/minute")
+async def delete_event(request: Request, event_id: str, user: dict = Depends(get_current_user)):
+    res = await db.events.delete_one({"id": event_id})
+    if res.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Event not found")
+    await audit_log(request, "event_delete", user=user, target=event_id)
+    return {"ok": True}
+
+
+# ---------- Announcements ----------
+
+@api_router.get("/announcements")
+async def list_announcements():
+    cursor = db.announcements.find({"active": True}).sort("createdAt", 1)
+    return [serialize_doc(d) async for d in cursor]
+
+
+@api_router.get("/admin/announcements")
+async def list_all_announcements(user: dict = Depends(get_current_user)):
+    cursor = db.announcements.find({}).sort("createdAt", 1)
+    return [serialize_doc(d) async for d in cursor]
+
+
+@api_router.post("/admin/announcements")
+@limiter.limit("30/minute")
+async def create_announcement(request: Request, body: AnnouncementIn, user: dict = Depends(get_current_user)):
+    now = datetime.now(timezone.utc).isoformat()
+    doc = {
+        "id": str(uuid.uuid4()),
+        "text": body.text.strip(),
+        "link": body.link or None,
+        "active": bool(body.active),
+        "createdAt": now,
+        "updatedAt": now,
+    }
+    await db.announcements.insert_one(doc)
+    await audit_log(request, "announcement_create", user=user, target=doc["id"], detail=doc["text"])
+    return serialize_doc(doc)
+
+
+@api_router.put("/admin/announcements/{announcement_id}")
+@limiter.limit("30/minute")
+async def update_announcement(
+    request: Request, announcement_id: str, body: AnnouncementIn, user: dict = Depends(get_current_user)
+):
+    existing = await db.announcements.find_one({"id": announcement_id})
+    if not existing:
+        raise HTTPException(status_code=404, detail="Announcement not found")
+    updates = {
+        "text": body.text.strip() or existing["text"],
+        "link": body.link or None,
+        "active": bool(body.active),
+        "updatedAt": datetime.now(timezone.utc).isoformat(),
+    }
+    await db.announcements.update_one({"id": announcement_id}, {"$set": updates})
+    doc = await db.announcements.find_one({"id": announcement_id})
+    await audit_log(request, "announcement_update", user=user, target=announcement_id)
+    return serialize_doc(doc)
+
+
+@api_router.delete("/admin/announcements/{announcement_id}")
+@limiter.limit("30/minute")
+async def delete_announcement(request: Request, announcement_id: str, user: dict = Depends(get_current_user)):
+    res = await db.announcements.delete_one({"id": announcement_id})
+    if res.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Announcement not found")
+    await audit_log(request, "announcement_delete", user=user, target=announcement_id)
     return {"ok": True}
 
 
@@ -561,6 +713,8 @@ async def on_startup():
     await db.users.create_index("email", unique=True)
     await db.blogs.create_index("slug", unique=True)
     await db.blogs.create_index("published")
+    await db.events.create_index("date")
+    await db.announcements.create_index("active")
     await db.audit_logs.create_index("timestamp")
     await db.audit_logs.create_index("actor_email")
     await seed_admin()
