@@ -8,7 +8,7 @@ import { api } from "@/lib/api";
 
 function CoverPanel({ coverImage, title, className = "" }) {
   return (
-    <div className={`relative rounded-2xl overflow-hidden ${className}`}>
+    <div className={`relative rounded-2xl overflow-hidden min-w-0 ${className}`}>
       {coverImage ? (
         <img src={coverImage} alt="" className="w-full h-full object-cover" />
       ) : (
@@ -19,7 +19,7 @@ function CoverPanel({ coverImage, title, className = "" }) {
             opacity: 0.85,
           }}
         >
-          <span className="font-display font-extrabold text-white text-[13px] uppercase tracking-[0.2em] px-6 text-center">
+          <span className="font-display font-extrabold text-white text-[13px] uppercase tracking-[0.2em] px-6 text-center break-words">
             {title}
           </span>
         </div>
@@ -128,8 +128,8 @@ export default function Blogs() {
               data-testid={`blog-featured-${featured.slug}`}
               className="group grid lg:grid-cols-2 gap-10 lg:gap-16 items-center"
             >
-              <div>
-                <h2 className="font-display font-extrabold text-[28px] sm:text-[36px] leading-[1.1] tracking-[-0.02em] mb-4 group-hover:underline">
+              <div className="min-w-0">
+                <h2 className="font-display font-extrabold text-[28px] sm:text-[36px] leading-[1.1] tracking-[-0.02em] mb-4 group-hover:underline break-words">
                   {featured.title}
                 </h2>
                 <div className="flex items-center gap-3 text-[12.5px] text-ink-3 mb-6">
@@ -144,7 +144,7 @@ export default function Blogs() {
                   </span>
                 </div>
                 {featured.excerpt && (
-                  <p className="text-[15.5px] leading-[1.65] text-ink-2 max-w-[440px] mb-8">
+                  <p className="text-[15.5px] leading-[1.65] text-ink-2 max-w-[440px] mb-8 break-words">
                     {featured.excerpt}
                   </p>
                 )}
@@ -183,12 +183,12 @@ export default function Blogs() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-60px" }}
                   transition={{ duration: 0.6, delay: (i % 2) * 0.08, ease: [0.16, 1, 0.3, 1] }}
-                  className="py-10 border-t first:sm:border-t-0"
+                  className="py-10 border-t first:sm:border-t-0 min-w-0"
                   style={{ borderColor: "var(--border-soft)" }}
                 >
                   <Link to={`/blogs/${b.slug}`} className="group flex flex-col gap-5">
                     <div>
-                      <h3 className="font-display font-bold text-[19px] leading-[1.25] tracking-[-0.01em] mb-3 group-hover:underline">
+                      <h3 className="font-display font-bold text-[19px] leading-[1.25] tracking-[-0.01em] mb-3 group-hover:underline break-words">
                         {b.title}
                       </h3>
                       <div className="flex items-center gap-3 text-[12px] text-ink-3">

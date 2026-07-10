@@ -106,16 +106,6 @@ export default function Login() {
             </Link>
           </div>
         </form>
-
-        <div
-          className="mt-16 pt-8 border-t text-[12px] text-ink-3 leading-[1.7]"
-          style={{ borderColor: "var(--border-soft)" }}
-        >
-          <div className="uppercase tracking-[0.18em] text-[10.5px] mb-2 text-ink">
-            Dev credentials
-          </div>
-          arshit24112@iiitd.ac.in · admin123
-        </div>
       </div>
     </main>
   );

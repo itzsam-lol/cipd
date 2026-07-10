@@ -31,7 +31,7 @@ export default function AnnouncementTicker() {
     <div
       data-testid="announcement-ticker"
       className="w-full h-9 overflow-hidden flex items-center"
-      style={{ background: "var(--ink)", color: "var(--bg)" }}
+      style={{ background: "#0a0a0a", color: "#fff" }}
     >
       <div className="marquee-track whitespace-nowrap flex gap-10 text-[12px] tracking-[0.04em] px-6">
         {Array.from({ length: 2 }).map((_, k) => (

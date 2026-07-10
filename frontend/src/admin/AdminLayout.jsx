@@ -1,12 +1,35 @@
+import { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "@/auth/AuthContext";
 import Logo from "@/components/Logo";
 import ThemeToggle from "@/components/ThemeToggle";
-import { LogOut, LayoutDashboard, FileText, PlusCircle, Calendar, Megaphone, Inbox, Layers } from "lucide-react";
+import {
+  LogOut,
+  LayoutDashboard,
+  FileText,
+  PlusCircle,
+  Calendar,
+  Megaphone,
+  Inbox,
+  Layers,
+  Menu,
+  X,
+} from "lucide-react";
+
+const NAV_ITEMS = [
+  { to: "/admin", end: true, icon: LayoutDashboard, label: "Dashboard", testid: "admin-nav-dashboard" },
+  { to: "/admin/blogs", icon: FileText, label: "All blogs", testid: "admin-nav-blogs" },
+  { to: "/admin/blogs/new", icon: PlusCircle, label: "New blog", testid: "admin-nav-new" },
+  { to: "/admin/projects", icon: Layers, label: "Projects", testid: "admin-nav-projects" },
+  { to: "/admin/events", icon: Calendar, label: "Events", testid: "admin-nav-events" },
+  { to: "/admin/announcements", icon: Megaphone, label: "Headlines", testid: "admin-nav-announcements" },
+  { to: "/admin/submissions", icon: Inbox, label: "Submissions", testid: "admin-nav-submissions" },
+];
 
 export default function AdminLayout({ children, title }) {
   const { user, logout } = useAuth();
   const nav = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const linkClass = ({ isActive }) =>
     `flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13.5px] transition-colors ${
@@ -15,14 +38,77 @@ export default function AdminLayout({ children, title }) {
         : "text-ink-2 hover:text-ink"
     }`;
 
+  const doLogout = () => {
+    logout();
+    nav("/login");
+  };
+
   return (
     <div
       data-testid="admin-layout"
-      className="min-h-screen grid grid-cols-1 lg:grid-cols-[260px_1fr]"
+      className="min-h-screen lg:grid lg:grid-cols-[260px_1fr]"
       style={{ background: "var(--bg)", color: "var(--ink)" }}
     >
+      {/* Mobile top bar */}
+      <div
+        className="lg:hidden sticky top-0 z-40 flex items-center justify-between px-6 h-16 border-b"
+        style={{ background: "var(--bg)", borderColor: "var(--border-soft)" }}
+      >
+        <Link to="/" className="flex items-center gap-2">
+          <Logo className="h-8 w-auto" />
+        </Link>
+        <button
+          type="button"
+          onClick={() => setMenuOpen((v) => !v)}
+          data-testid="admin-menu-toggle"
+          aria-label={menuOpen ? "Close menu" : "Open menu"}
+          className="w-10 h-10 inline-flex items-center justify-center rounded-full text-ink"
+        >
+          {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+        </button>
+      </div>
+      {menuOpen && (
+        <div
+          className="lg:hidden sticky top-16 z-30 px-6 py-6 border-b"
+          style={{ background: "var(--bg)", borderColor: "var(--border-soft)" }}
+        >
+          <div className="text-[10.5px] uppercase tracking-[0.22em] text-ink-3 mb-3 px-3">CMS</div>
+          <nav className="space-y-1 mb-6">
+            {NAV_ITEMS.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                end={item.end}
+                className={linkClass}
+                data-testid={item.testid}
+                onClick={() => setMenuOpen(false)}
+              >
+                <item.icon className="w-4 h-4" /> {item.label}
+              </NavLink>
+            ))}
+          </nav>
+          <div className="pt-4 border-t flex items-center justify-between" style={{ borderColor: "var(--border-soft)" }}>
+            <div className="min-w-0">
+              <div className="text-[13px] font-medium truncate">{user?.name || "Admin"}</div>
+              <div className="text-[11px] text-ink-3 truncate">{user?.email}</div>
+            </div>
+            <div className="flex items-center gap-3 shrink-0">
+              <ThemeToggle />
+              <button
+                onClick={doLogout}
+                data-testid="admin-logout-mobile"
+                className="inline-flex items-center gap-2 text-[12.5px] text-ink-2 hover:text-ink"
+              >
+                <LogOut className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Desktop sidebar */}
       <aside
-        className="border-r p-6 flex flex-col lg:sticky lg:top-0 lg:h-screen"
+        className="hidden lg:flex border-r p-6 flex-col lg:sticky lg:top-0 lg:h-screen"
         style={{ borderColor: "var(--border-soft)" }}
       >
         <Link to="/" className="flex items-center gap-2 mb-10">
@@ -32,27 +118,11 @@ export default function AdminLayout({ children, title }) {
           CMS
         </div>
         <nav className="space-y-1">
-          <NavLink to="/admin" end className={linkClass} data-testid="admin-nav-dashboard">
-            <LayoutDashboard className="w-4 h-4" /> Dashboard
-          </NavLink>
-          <NavLink to="/admin/blogs" className={linkClass} data-testid="admin-nav-blogs">
-            <FileText className="w-4 h-4" /> All blogs
-          </NavLink>
-          <NavLink to="/admin/blogs/new" className={linkClass} data-testid="admin-nav-new">
-            <PlusCircle className="w-4 h-4" /> New blog
-          </NavLink>
-          <NavLink to="/admin/projects" className={linkClass} data-testid="admin-nav-projects">
-            <Layers className="w-4 h-4" /> Projects
-          </NavLink>
-          <NavLink to="/admin/events" className={linkClass} data-testid="admin-nav-events">
-            <Calendar className="w-4 h-4" /> Events
-          </NavLink>
-          <NavLink to="/admin/announcements" className={linkClass} data-testid="admin-nav-announcements">
-            <Megaphone className="w-4 h-4" /> Headlines
-          </NavLink>
-          <NavLink to="/admin/submissions" className={linkClass} data-testid="admin-nav-submissions">
-            <Inbox className="w-4 h-4" /> Submissions
-          </NavLink>
+          {NAV_ITEMS.map((item) => (
+            <NavLink key={item.to} to={item.to} end={item.end} className={linkClass} data-testid={item.testid}>
+              <item.icon className="w-4 h-4" /> {item.label}
+            </NavLink>
+          ))}
         </nav>
 
         <div className="mt-auto pt-6 border-t" style={{ borderColor: "var(--border-soft)" }}>
@@ -71,10 +141,7 @@ export default function AdminLayout({ children, title }) {
           <div className="flex items-center justify-between px-2">
             <ThemeToggle />
             <button
-              onClick={() => {
-                logout();
-                nav("/login");
-              }}
+              onClick={doLogout}
               data-testid="admin-logout"
               className="inline-flex items-center gap-2 text-[12.5px] text-ink-2 hover:text-ink"
             >
