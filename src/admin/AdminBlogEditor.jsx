@@ -23,6 +23,18 @@ export default function AdminBlogEditor() {
   const [err, setErr] = useState("");
   const [slug, setSlug] = useState("");
   const fileRef = useRef(null);
+  const excerptRef = useRef(null);
+
+  const resizeExcerpt = () => {
+    const el = excerptRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${el.scrollHeight}px`;
+  };
+
+  useEffect(() => {
+    resizeExcerpt();
+  }, [excerpt, loading]);
 
   useEffect(() => {
     if (isNew) return;
@@ -207,8 +219,10 @@ export default function AdminBlogEditor() {
 
         {/* Subtitle */}
         <textarea
+          ref={excerptRef}
           value={excerpt}
           onChange={(e) => setExcerpt(e.target.value)}
+          onInput={resizeExcerpt}
           placeholder="Add a description…"
           data-testid="blog-excerpt"
           rows={2}

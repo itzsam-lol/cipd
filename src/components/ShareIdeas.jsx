@@ -1,18 +1,34 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Sparkles, Check } from "lucide-react";
+import { api, formatApiError } from "@/lib/api";
 
 export default function ShareIdeas() {
   const [form, setForm] = useState({ name: "", email: "", idea: "" });
   const [sent, setSent] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault();
-    setSent(true);
-    setTimeout(() => {
-      setForm({ name: "", email: "", idea: "" });
-      setSent(false);
-    }, 3200);
+    setSubmitting(true);
+    setError("");
+    try {
+      await api.post("/share-idea", {
+        name: form.name,
+        email: form.email,
+        message: form.idea,
+      });
+      setSent(true);
+      setTimeout(() => {
+        setForm({ name: "", email: "", idea: "" });
+        setSent(false);
+      }, 3200);
+    } catch (err) {
+      setError(formatApiError(err, "Couldn't send that — try again?"));
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -87,16 +103,24 @@ export default function ShareIdeas() {
             onChange={(e) => setForm({ ...form, idea: e.target.value })}
             required
           />
-          <div className="sm:col-span-2 mt-10 flex items-center gap-6">
+          {error && (
+            <div className="sm:col-span-2 mt-4 text-[13px]" style={{ color: "#ec1e79" }}>
+              {error}
+            </div>
+          )}
+
+          <div className="sm:col-span-2 mt-10 flex items-center gap-6 flex-wrap">
             <button
               type="submit"
               data-testid="share-submit"
               data-cursor="hover"
-              disabled={sent}
+              disabled={sent || submitting}
               className="group relative inline-flex items-center gap-3 rounded-full pl-8 pr-3 py-3 text-white text-[14px] font-medium overflow-hidden disabled:opacity-90"
               style={{ background: "var(--ink)" }}
             >
-              <span>{sent ? "Got it, we'll be in touch" : "Send my idea"}</span>
+              <span>
+                {sent ? "Got it, we'll be in touch" : submitting ? "Sending…" : "Send my idea"}
+              </span>
               <span
                 className="inline-flex w-9 h-9 rounded-full items-center justify-center"
                 style={{

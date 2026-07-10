@@ -9,7 +9,7 @@ const LINKS = [
   { label: "Home", to: "/", kind: "route" },
   { label: "iPD-CP", to: "/ipd-cp", kind: "route" },
   { label: "Projects", to: "/#projects", kind: "hash" },
-  { label: "Events", to: "/#events", kind: "hash" },
+  { label: "Events", to: "/events", kind: "route" },
   { label: "Blogs", to: "/blogs", kind: "route" },
   { label: "Connect", to: "/#connect", kind: "hash" },
   { label: "Idea", to: "/#share", kind: "hash" },

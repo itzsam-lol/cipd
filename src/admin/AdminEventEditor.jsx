@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import AdminLayout from "@/admin/AdminLayout";
 import { api, formatApiError } from "@/lib/api";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Eye } from "lucide-react";
 
 const ACCENTS = [
   { value: "teal", label: "Teal" },
@@ -71,12 +71,24 @@ export default function AdminEventEditor() {
 
   return (
     <AdminLayout title={isNew ? "New event" : "Edit event"}>
-      <Link
-        to="/admin/events"
-        className="inline-flex items-center gap-2 text-[13px] text-ink-3 hover:text-ink mb-8"
-      >
-        <ArrowLeft className="w-4 h-4" /> All events
-      </Link>
+      <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
+        <Link
+          to="/admin/events"
+          className="inline-flex items-center gap-2 text-[13px] text-ink-3 hover:text-ink"
+        >
+          <ArrowLeft className="w-4 h-4" /> All events
+        </Link>
+        {!isNew && (
+          <Link
+            to={`/events#event-${id}`}
+            target="_blank"
+            data-testid="preview-event-link"
+            className="inline-flex items-center gap-2 text-[13px] text-ink-2 hover:text-ink"
+          >
+            <Eye className="w-4 h-4" /> Preview
+          </Link>
+        )}
+      </div>
 
       {err && (
         <div
