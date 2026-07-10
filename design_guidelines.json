@@ -1,0 +1,157 @@
+{
+  "theme": "Light",
+  "archetype": "Organic & Earthy / Premium Minimalist",
+  "design_philosophy": "Handcrafted, editorial layout. High-end Apple-style product pages. Generous whitespace, massive typography, smooth scrolling, human-centred storytelling.",
+  "colors": {
+    "background": {
+      "primary": "#FFFFFF",
+      "secondary": "#F9FAFB",
+      "tertiary": "#F3F4F6"
+    },
+    "text": {
+      "primary": "#0A0A0B",
+      "secondary": "#4B5563",
+      "tertiary": "#9CA3AF"
+    },
+    "accents": {
+      "teal": "#0FB5A8",
+      "pink": "#EC1E79",
+      "purple": "#6E2DBE"
+    },
+    "rules": [
+      "Strictly NO purple/teal gradients on white as primary backgrounds.",
+      "Accents must be used sparingly (gradient blobs, underlines, highlights, Three.js mesh).",
+      "Body and heading text must be near-black (#0A0A0B) to maintain contrast."
+    ]
+  },
+  "typography": {
+    "fonts": {
+      "heading": "'Plus Jakarta Sans', sans-serif",
+      "body": "'Inter', sans-serif"
+    },
+    "scale": {
+      "h1_hero": "text-[clamp(4rem,8vw,10rem)] leading-[0.9] tracking-tighter font-bold",
+      "h2": "text-[clamp(2.5rem,5vw,4.5rem)] leading-tight tracking-tight font-semibold",
+      "h3": "text-2xl sm:text-3xl lg:text-4xl leading-snug font-medium",
+      "body_large": "text-lg sm:text-xl md:text-2xl leading-relaxed",
+      "body": "text-base sm:text-lg leading-relaxed",
+      "overline": "text-xs sm:text-sm uppercase tracking-[0.2em] font-semibold text-gray-500"
+    },
+    "rules": [
+      "Use tight letter spacing for headings.",
+      "Never center-align paragraphs; prioritize left alignment for readability.",
+      "Avoid 'Inter' for headings."
+    ]
+  },
+  "layout_spacing": {
+    "philosophy": "Generous Spacing Philosophy. 2-3x more spacing than typical designs.",
+    "section_padding": "py-24 sm:py-32 lg:py-48",
+    "container": "max-w-7xl mx-auto px-6 sm:px-8 lg:px-12",
+    "grid_gap": "gap-8 lg:gap-16"
+  },
+  "sections_blueprint": [
+    {
+      "name": "Navigation",
+      "type": "Header",
+      "description": "Glassmorphism sticky header. Very clean. Logo left, navigation + Apply Now right.",
+      "style": "backdrop-blur-xl bg-white/70 border-b border-gray-100 z-50 sticky top-0",
+      "data_testid": "nav-header"
+    },
+    {
+      "name": "Hero",
+      "type": "Hero Section",
+      "description": "Massive editorial typography left. Interactive Three.js 3D blob right.",
+      "layout": "grid grid-cols-1 lg:grid-cols-2 min-h-[90vh] items-center",
+      "content": "Heading: 'Ideas. Products. Impact.'",
+      "interactions": "Three.js mesh material (MeshDistortMaterial) morphing on hover, colored with Teal, Pink, Purple gradient.",
+      "data_testid": "hero-section"
+    },
+    {
+      "name": "CiPD Story",
+      "type": "Storytelling Scroll",
+      "description": "Idea -> Research -> Development -> Real-world Impact. Full-bleed sections pinned to screen during scroll.",
+      "layout": "Sticky pinning / Framer Motion scroll progress. One phase fading into another.",
+      "data_testid": "story-section"
+    },
+    {
+      "name": "Featured Video",
+      "type": "Media Showcase",
+      "description": "YouTube shorts embedded in a vertical 9:16 cinematic frame. Surrounded by massive whitespace.",
+      "layout": "Flex center. Video container has soft shadow, rounded corners. No excessive text.",
+      "video_url": "https://www.youtube.com/shorts/C8cfSDmtQxo",
+      "data_testid": "featured-video"
+    },
+    {
+      "name": "Featured Projects",
+      "type": "Horizontal Scroll Apple-style",
+      "description": "One project visible at a time. Horizontal scroll mapping to vertical scroll.",
+      "layout": "Sticky container, Framer Motion useScroll hook transforming x axis.",
+      "images": [
+        "https://images.unsplash.com/photo-1592659762303-90081d34b277?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxODF8MHwxfHNlYXJjaHwyfHxwY2IlMjBkZXNpZ24lMjBoYXJkd2FyZXxlbnwwfHx8fDE3ODE0Mjg5Mjd8MA&ixlib=rb-4.1.0&q=85",
+        "https://images.unsplash.com/photo-1633633749183-2b804f9f8159?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1ODh8MHwxfHNlYXJjaHwyfHxoYXJkd2FyZSUyMHByb3RvdHlwZSUyMG1pbmltYWxpc3R8ZW58MHx8fHwxNzgxNDI4OTMyfDA&ixlib=rb-4.1.0&q=85"
+      ],
+      "data_testid": "projects-section"
+    },
+    {
+      "name": "Events",
+      "type": "Timeline",
+      "description": "Premium timeline. Not generic cards. Minimalist nodes with large typography dates and crisp imagery.",
+      "layout": "Vertical line with alternating left/right minimalist content blocks.",
+      "images": [
+        "https://images.unsplash.com/photo-1505373877841-8d25f7d46678?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA3MDR8MHwxfHNlYXJjaHwxfHxldmVudCUyMHRlY2glMjBwcmVzZW50YXRpb258ZW58MHx8fHwxNzgxNDI4OTMyfDA&ixlib=rb-4.1.0&q=85"
+      ],
+      "data_testid": "events-section"
+    },
+    {
+      "name": "Student Experience",
+      "type": "Editorial Gallery",
+      "description": "Large photography showcasing human-centered stories, workshops, hardware labs.",
+      "layout": "Asymmetric Bento or Masonry grid. Generous gap.",
+      "images": [
+        "https://images.unsplash.com/photo-1596496356933-9b6e0b186b88?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxOTJ8MHwxfHNlYXJjaHwzfHxzdHVkZW50cyUyMHdvcmtzaG9wJTIwdGVjaHxlbnwwfHx8fDE3ODE0Mjg5MjZ8MA&ixlib=rb-4.1.0&q=85",
+        "https://images.unsplash.com/photo-1635501108232-29707bfb7c75?crop=entropy&cs=srgb&fm=jpg&ixid=M3w7NDQ2NDJ8MHwxfHNlYXJjaHwyfHxzdHVkZW50JTIwaGFyZHdhcmUlMjBwb3J0cmFpdHxlbnwwfHx8fDE3ODE0Mjg5MzJ8MA&ixlib=rb-4.1.0&q=85"
+      ],
+      "data_testid": "student-experience"
+    },
+    {
+      "name": "Share Your Ideas",
+      "type": "Call to Action",
+      "description": "Signature large CTA section. Form is frontend only. Highly memorable. Subtle blob blur background.",
+      "layout": "Centered massive heading. Minimalist form fields with bottom borders only (no boxes).",
+      "data_testid": "share-ideas-section"
+    },
+    {
+      "name": "Footer",
+      "type": "Connect",
+      "description": "Minimal contact, map, social links.",
+      "layout": "Grid 1-4 columns. Subtle gray background (#F9FAFB).",
+      "data_testid": "footer"
+    }
+  ],
+  "media": {
+    "logo_url": "https://customer-assets.emergentagent.com/job_eb6a90af-0223-4df6-b0fe-5d08599bee18/artifacts/sjkzh3zl_b17e3429-79de-4a8b-9888-d8026c138658.jpg",
+    "video_url": "https://www.youtube.com/shorts/C8cfSDmtQxo",
+    "icons": "lucide-react"
+  },
+  "interactions": {
+    "scrolling": "Implement smooth scrolling using Lenis.",
+    "animations": "Framer Motion for scroll-triggered fade-ups and scale-ins. DO NOT overuse bouncy animations. Keep them clean and professional (ease: [0.16, 1, 0.3, 1]).",
+    "three_js": "Use @react-three/fiber and @react-three/drei. Implement a MeshDistortMaterial sphere or custom organic shape that responds to mouse movement."
+  },
+  "anti_patterns": [
+    "NO generic 'Bootstrap' column cards.",
+    "NO statistics sections (e.g., '10k+ users').",
+    "NO dark backgrounds for primary sections.",
+    "NO purple/teal heavy gradients on backgrounds.",
+    "NO emojis. Use lucide-react.",
+    "NO template-based generic layouts."
+  ],
+  "dependencies_to_add": [
+    "framer-motion",
+    "lucide-react",
+    "three",
+    "@react-three/fiber",
+    "@react-three/drei",
+    "lenis"
+  ]
+}

@@ -1,0 +1,531 @@
+/* =================================================================
+   Medium-style editor + blog body
+   ================================================================= */
+
+:root {
+    --read-width: 680px;
+    --read-wide: 1100px;
+}
+
+/* ============== EDITOR PAGE (admin) ============== */
+
+.tt-medium-page {
+    max-width: var(--read-width);
+    margin: 0 auto;
+    padding: 12px 0 80px;
+}
+.tt-medium-page > * {
+    display: block;
+}
+
+/* Cover */
+.tt-cover {
+    margin-bottom: 28px;
+    display: block;
+}
+.tt-cover-img {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    display: block;
+}
+.tt-cover-img img {
+    width: 100%;
+    max-height: 360px;
+    object-fit: cover;
+    display: block;
+}
+.tt-cover-x {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+    border-radius: 9999px;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.tt-cover-empty {
+    width: 100%;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px dashed var(--border-soft);
+    border-radius: 14px;
+    color: var(--ink-3);
+    font-size: 13.5px;
+    transition: all 0.3s ease;
+    background: transparent;
+}
+.tt-cover-empty:hover {
+    color: var(--ink);
+    border-color: var(--ink-3);
+}
+
+/* Title + subtitle */
+.tt-medium-title {
+    width: 100%;
+    display: block;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    line-height: 1.05;
+    font-size: clamp(2rem, 4vw, 3rem);
+    color: var(--ink);
+    padding: 4px 0;
+    margin-bottom: 6px;
+}
+.tt-medium-title::placeholder {
+    color: var(--ink-3);
+    font-weight: 800;
+}
+
+.tt-medium-subtitle {
+    width: 100%;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    resize: none;
+    font-family: "Source Serif 4", Georgia, serif;
+    font-style: italic;
+    font-size: 22px;
+    line-height: 1.45;
+    color: var(--ink-2);
+    margin-bottom: 22px;
+    padding: 0;
+}
+.tt-medium-subtitle::placeholder {
+    color: var(--ink-3);
+}
+
+.tt-medium-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 28px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--border-soft);
+}
+.tt-meta-label {
+    font-size: 10.5px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+}
+.tt-meta-select {
+    background: transparent;
+    border: 1px solid var(--border-soft);
+    border-radius: 9999px;
+    padding: 5px 12px;
+    font-size: 12px;
+    color: var(--ink);
+    outline: 0;
+}
+.tt-meta-slug {
+    margin-left: auto;
+    font-size: 12px;
+    color: var(--ink-3);
+    font-family: ui-monospace, monospace;
+}
+
+.tt-medium-help {
+    margin-top: 36px;
+    font-size: 12.5px;
+    color: var(--ink-3);
+    line-height: 1.65;
+}
+.tt-medium-help kbd {
+    display: inline-block;
+    padding: 1px 6px;
+    border-radius: 4px;
+    border: 1px solid var(--border-soft);
+    font-family: ui-monospace, monospace;
+    font-size: 11px;
+    margin: 0 2px;
+}
+
+/* ============== EDITOR CANVAS (Tiptap host) ============== */
+
+.tt-medium-host {
+    position: relative;
+    display: block;
+}
+
+.tt-medium-host .ProseMirror {
+    outline: none;
+    min-height: 360px;
+    font-family: "Source Serif 4", Georgia, serif;
+    font-size: 20px;
+    line-height: 1.75;
+    color: var(--ink);
+    display: block;
+}
+
+.tt-medium-host .ProseMirror p {
+    margin: 0 0 1.25em;
+}
+
+.tt-medium-host .ProseMirror .is-editor-empty:first-child::before,
+.tt-medium-host .ProseMirror p.is-empty::before {
+    color: var(--ink-3);
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    pointer-events: none;
+}
+
+/* Headings — DISTINCT */
+.tt-medium-host .ProseMirror h1,
+.tt-medium-host .ProseMirror h2,
+.tt-medium-host .ProseMirror h3,
+.blog-body .tt-h {
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+    color: var(--ink);
+}
+.tt-medium-host .ProseMirror h1,
+.blog-body .tt-h1 {
+    font-size: 2.45rem;
+    margin: 1.6em 0 0.45em;
+    letter-spacing: -0.035em;
+}
+.tt-medium-host .ProseMirror h2,
+.blog-body .tt-h2 {
+    font-size: 1.85rem;
+    margin: 1.5em 0 0.45em;
+}
+.tt-medium-host .ProseMirror h3,
+.blog-body .tt-h3 {
+    font-size: 1.4rem;
+    margin: 1.3em 0 0.4em;
+    letter-spacing: -0.015em;
+}
+
+.tt-medium-host .ProseMirror ul,
+.tt-medium-host .ProseMirror ol {
+    padding-left: 1.5em;
+    margin: 0 0 1.25em;
+}
+.tt-medium-host .ProseMirror li {
+    margin: 0.35em 0;
+}
+
+.tt-medium-host .ProseMirror blockquote {
+    border-left: 3px solid var(--pink);
+    padding: 0.1em 0 0.1em 1.1em;
+    margin: 1.4em 0;
+    color: var(--ink-2);
+    font-style: italic;
+}
+
+.tt-medium-host .ProseMirror a,
+.blog-body .tt-link {
+    color: var(--ink);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-thickness: 1px;
+}
+
+.tt-medium-host .ProseMirror hr,
+.blog-body .tt-hr {
+    border: 0;
+    border-top: 1px solid var(--border-soft);
+    margin: 2em 0;
+}
+
+.tt-medium-host .ProseMirror pre,
+.blog-body .tt-code {
+    background: var(--bg-mute);
+    border-radius: 12px;
+    padding: 16px 18px;
+    overflow-x: auto;
+    margin: 1.4em 0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 14.5px;
+}
+
+/* ============== FIGURE: Image + caption ============== */
+
+.tt-figure {
+    margin: 1.8em auto;
+    display: block;
+    text-align: center;
+    position: relative;
+}
+.tt-figure.tt-size-small {
+    max-width: 320px;
+}
+.tt-figure.tt-size-medium {
+    max-width: 100%;
+}
+.tt-figure.tt-size-large {
+    max-width: calc(var(--read-width) + 200px);
+    margin-left: -100px;
+    margin-right: -100px;
+}
+.tt-figure.tt-size-full {
+    max-width: calc(100vw - 64px);
+    margin-left: calc((var(--read-width) - 100vw) / 2 + 32px);
+    margin-right: calc((var(--read-width) - 100vw) / 2 + 32px);
+}
+
+@media (max-width: 1200px) {
+    .tt-figure.tt-size-large {
+        max-width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+    }
+    .tt-figure.tt-size-full {
+        max-width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+    }
+}
+
+.tt-img-wrap {
+    position: relative;
+    border-radius: 14px;
+    overflow: hidden;
+    background: var(--bg-mute);
+}
+.tt-img-figure img,
+.tt-img-figure .tt-img-wrap img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.tt-yt-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16/9;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #000;
+}
+.tt-yt-wrap iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+.tt-caption {
+    display: block;
+    margin: 12px auto 0;
+    font-family: "Source Serif 4", Georgia, serif;
+    font-style: italic;
+    font-size: 14.5px;
+    color: var(--ink-3);
+    line-height: 1.5;
+    max-width: 90%;
+    text-align: center;
+}
+.tt-caption-input {
+    width: 100%;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    resize: none;
+    text-align: center;
+    padding: 8px 0;
+    overflow: hidden;
+}
+.tt-caption-input::placeholder {
+    color: var(--ink-3);
+    opacity: 0.6;
+}
+
+/* Image inline toolbar (visible when selected) */
+.tt-figure .tt-img-toolbar {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    gap: 4px;
+    background: rgba(15, 15, 17, 0.85);
+    backdrop-filter: blur(8px);
+    border-radius: 9999px;
+    padding: 4px 6px;
+    opacity: 0;
+    transition: opacity 0.2s;
+    z-index: 5;
+}
+.tt-figure:hover .tt-img-toolbar,
+.tt-figure.is-selected .tt-img-toolbar {
+    opacity: 1;
+}
+.tt-img-toolbar button {
+    width: 26px;
+    height: 26px;
+    border-radius: 9999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 11px;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-weight: 600;
+    background: transparent;
+    transition: all 0.15s;
+}
+.tt-img-toolbar button:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+}
+.tt-img-toolbar button.is-active {
+    background: #fff;
+    color: #000;
+}
+.tt-img-toolbar .tt-img-sep {
+    width: 1px;
+    height: 16px;
+    background: rgba(255, 255, 255, 0.2);
+    align-self: center;
+    margin: 0 2px;
+}
+.tt-img-toolbar .tt-img-del {
+    color: #ff5a7a;
+}
+
+/* Drag-handle hover */
+.ProseMirror-selectednode .tt-figure {
+    outline: 2px solid var(--teal);
+    outline-offset: 4px;
+    border-radius: 14px;
+}
+
+/* ============== Bubble menu ============== */
+
+.tt-bubble-wrap {
+    position: fixed;
+    z-index: 250;
+    transform: translate(-50%, -100%);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease;
+}
+.tt-bubble-wrap.is-open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.tt-bubble {
+    display: inline-flex;
+    align-items: center;
+    background: #0a0a0b;
+    border-radius: 9999px;
+    padding: 4px;
+    box-shadow:
+        0 10px 30px -10px rgba(0, 0, 0, 0.45),
+        0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+.tt-bubble-sep {
+    width: 1px;
+    height: 18px;
+    background: rgba(255, 255, 255, 0.15);
+    margin: 0 4px;
+}
+
+/* ============== Slash menu ============== */
+
+.slash-menu {
+    position: fixed;
+    z-index: 200;
+    background: var(--bg);
+    border: 1px solid var(--border-soft);
+    border-radius: 12px;
+    box-shadow:
+        0 20px 50px -12px rgba(0, 0, 0, 0.18),
+        0 0 0 1px rgba(0, 0, 0, 0.02);
+    padding: 6px;
+    width: 280px;
+    max-height: 320px;
+    overflow-y: auto;
+}
+.slash-menu-head {
+    padding: 6px 10px;
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: var(--ink-3);
+}
+.slash-menu ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.slash-menu li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.12s;
+}
+.slash-menu li.is-active {
+    background: color-mix(in srgb, var(--ink) 6%, transparent);
+}
+.slash-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    background: var(--bg-mute);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink);
+}
+.slash-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+.slash-label {
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--ink);
+}
+.slash-hint {
+    font-size: 11.5px;
+    color: var(--ink-3);
+}
+
+/* ============== PUBLIC blog body ============== */
+
+.blog-body .tt-prose {
+    font-family: "Source Serif 4", Georgia, serif;
+    font-size: 20px;
+    line-height: 1.78;
+    color: var(--ink);
+}
+.blog-body .tt-p {
+    margin: 0 0 1.3em;
+}
+.blog-body .tt-ul,
+.blog-body .tt-ol {
+    padding-left: 1.5em;
+    margin: 0 0 1.3em;
+}
+.blog-body .tt-li {
+    margin: 0.4em 0;
+}
+.blog-body .tt-bq {
+    border-left: 3px solid var(--pink);
+    padding: 0.1em 0 0.1em 1.2em;
+    margin: 1.6em 0;
+    color: var(--ink-2);
+    font-style: italic;
+}
