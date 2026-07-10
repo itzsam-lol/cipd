@@ -50,6 +50,7 @@ export default function LatestBlogs() {
           {blogs.map((b, i) => (
             <motion.div
               key={b.id}
+              className="min-w-0"
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
@@ -91,11 +92,11 @@ export default function LatestBlogs() {
                 <div className="flex items-center gap-3 text-[11px] uppercase tracking-[0.2em] text-ink-3 mb-3">
                   <span>{b.tag || "Note"}</span>
                 </div>
-                <h3 className="font-display font-bold text-[19px] leading-[1.2] tracking-[-0.01em] group-hover:underline">
+                <h3 className="font-display font-bold text-[19px] leading-[1.2] tracking-[-0.01em] group-hover:underline break-words">
                   {b.title}
                 </h3>
                 {b.excerpt && (
-                  <p className="mt-3 text-[14.5px] leading-[1.55] text-ink-2 line-clamp-2">
+                  <p className="mt-3 text-[14.5px] leading-[1.55] text-ink-2 line-clamp-2 break-words">
                     {b.excerpt}
                   </p>
                 )}

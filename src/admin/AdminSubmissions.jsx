@@ -143,7 +143,7 @@ export default function AdminSubmissions() {
                     )}
                   </div>
                   {s.message && (
-                    <p className="text-[14px] leading-[1.6] text-ink max-w-[640px] whitespace-pre-wrap mb-4">
+                    <p className="text-[14px] leading-[1.6] text-ink max-w-[640px] whitespace-pre-wrap break-words mb-4">
                       {s.message}
                     </p>
                   )}

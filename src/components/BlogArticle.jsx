@@ -33,7 +33,7 @@ export default function BlogArticle({ blog, animate = true }) {
 
       <H1
         {...motionProps}
-        className="font-extrabold leading-[1.04] tracking-[-0.035em]"
+        className="font-extrabold leading-[1.04] tracking-[-0.035em] break-words"
         style={{ fontSize: "clamp(2.1rem, 4.5vw, 3.4rem)" }}
         data-testid="blog-title"
       >
@@ -42,7 +42,7 @@ export default function BlogArticle({ blog, animate = true }) {
 
       {blog.excerpt && (
         <p
-          className="mt-7 text-[20px] sm:text-[22px] leading-[1.5] text-ink-2"
+          className="mt-7 text-[20px] sm:text-[22px] leading-[1.5] text-ink-2 break-words"
           style={{ fontFamily: "'Source Serif 4', Georgia, serif", fontStyle: "italic" }}
           data-testid="blog-subtitle"
         >

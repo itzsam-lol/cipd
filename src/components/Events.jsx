@@ -132,7 +132,7 @@ export default function Events() {
                         </div>
                       )}
                       {e.description && (
-                        <p className="mt-5 text-[16px] md:text-[17px] leading-[1.6] text-ink-2">
+                        <p className="mt-5 text-[16px] md:text-[17px] leading-[1.6] text-ink-2 break-words">
                           {e.description}
                         </p>
                       )}

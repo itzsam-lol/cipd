@@ -20,14 +20,14 @@ function AccentPanel({ accent, title, className = "" }) {
   const color = ACCENT_VARS[accent] || ACCENT_VARS.teal;
   return (
     <div
-      className={`relative rounded-2xl overflow-hidden flex items-center justify-center ${className}`}
+      className={`relative rounded-2xl overflow-hidden flex items-center justify-center min-w-0 ${className}`}
       style={{ background: "#0a0a0a" }}
     >
       <div
         className="absolute inset-0 opacity-70"
         style={{ background: `radial-gradient(circle at 50% 40%, ${color}, transparent 65%)` }}
       />
-      <span className="relative font-display font-extrabold text-white text-center text-[15px] uppercase tracking-[0.2em] px-6">
+      <span className="relative font-display font-extrabold text-white text-center text-[15px] uppercase tracking-[0.2em] px-6 break-words">
         {title}
       </span>
     </div>
@@ -102,8 +102,8 @@ export default function EventsPage() {
               transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
               className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center scroll-mt-32"
             >
-              <div>
-                <h2 className="font-display font-extrabold text-[28px] sm:text-[36px] leading-[1.1] tracking-[-0.02em] mb-4">
+              <div className="min-w-0">
+                <h2 className="font-display font-extrabold text-[28px] sm:text-[36px] leading-[1.1] tracking-[-0.02em] mb-4 break-words">
                   {featured.title}
                 </h2>
                 <div className="text-[13px] text-ink-3 mb-1">{formatDate(featured.date)}</div>
@@ -113,7 +113,7 @@ export default function EventsPage() {
                   </div>
                 )}
                 {featured.description && (
-                  <p className="text-[15.5px] leading-[1.65] text-ink-2 max-w-[440px] mb-8">
+                  <p className="text-[15.5px] leading-[1.65] text-ink-2 max-w-[440px] mb-8 break-words">
                     {featured.description}
                   </p>
                 )}
@@ -137,11 +137,11 @@ export default function EventsPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-60px" }}
                   transition={{ duration: 0.6, delay: (i % 2) * 0.08, ease: [0.16, 1, 0.3, 1] }}
-                  className="py-10 border-t first:sm:border-t-0 flex flex-col gap-5 scroll-mt-32"
+                  className="py-10 border-t first:sm:border-t-0 flex flex-col gap-5 scroll-mt-32 min-w-0"
                   style={{ borderColor: "var(--border-soft)" }}
                 >
                   <div>
-                    <h3 className="font-display font-bold text-[19px] leading-[1.25] tracking-[-0.01em] mb-3">
+                    <h3 className="font-display font-bold text-[19px] leading-[1.25] tracking-[-0.01em] mb-3 break-words">
                       {e.title}
                     </h3>
                     <div className="text-[12.5px] text-ink-3">{formatDate(e.date)}</div>
