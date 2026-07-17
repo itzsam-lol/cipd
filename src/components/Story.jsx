@@ -90,7 +90,7 @@ export default function Story() {
             style={{ fontSize: "clamp(2.5rem, 6vw, 5.5rem)" }}
           >
             From a thought, <br />
-            <span className="text-ink-3">to a thing in your hand.</span>
+            <span className="accent-gradient-text">to a thing in your hand.</span>
           </h2>
         </div>
 

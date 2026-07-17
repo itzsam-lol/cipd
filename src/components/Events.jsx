@@ -46,7 +46,7 @@ export default function Events() {
               style={{ fontSize: "clamp(2.5rem, 6vw, 5.5rem)" }}
             >
               Show up. <br />
-              <span className="text-ink-3">Build something.</span>
+              <span className="accent-gradient-text">Build something.</span>
             </h2>
           </div>
           <div className="lg:col-span-5 flex lg:flex-col lg:items-end lg:justify-end gap-6">
@@ -116,12 +116,12 @@ export default function Events() {
                     </div>
 
                     {/* content */}
-                    <div className="max-w-[640px]">
+                    <Link to={`/events/${e.id}`} className="group block max-w-[640px]">
                       <div className="text-[11px] uppercase tracking-[0.22em] text-ink-3 mb-3 sm:hidden">
                         {day} · {year}
                       </div>
                       <h3
-                        className="font-display font-bold tracking-[-0.02em] text-ink leading-[1.05]"
+                        className="font-display font-bold tracking-[-0.02em] text-ink leading-[1.05] break-words group-hover:underline"
                         style={{ fontSize: "clamp(1.75rem, 3.4vw, 3rem)" }}
                       >
                         {e.title}
@@ -136,7 +136,7 @@ export default function Events() {
                           {e.description}
                         </p>
                       )}
-                    </div>
+                    </Link>
                   </motion.li>
                 );
               })}

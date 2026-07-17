@@ -19,7 +19,7 @@ export default function AnnouncementTicker() {
         href={a.link}
         target={a.link.startsWith("http") ? "_blank" : undefined}
         rel="noreferrer"
-        className="hover:underline"
+        className="hover:text-ink transition-colors"
       >
         {a.text}
       </a>
@@ -30,10 +30,10 @@ export default function AnnouncementTicker() {
   return (
     <div
       data-testid="announcement-ticker"
-      className="w-full h-9 overflow-hidden flex items-center"
-      style={{ background: "#0a0a0a", color: "#fff" }}
+      className="w-full h-9 overflow-hidden flex items-center border-b"
+      style={{ background: "var(--bg)", borderColor: "var(--border-soft)" }}
     >
-      <div className="marquee-track whitespace-nowrap flex gap-10 text-[12px] tracking-[0.04em] px-6">
+      <div className="marquee-track whitespace-nowrap flex gap-10 text-[11px] uppercase tracking-[0.22em] text-ink-3 px-6">
         {Array.from({ length: 2 }).map((_, k) => (
           <span key={k} className="flex gap-10 shrink-0">
             {items.map((a, i) => (

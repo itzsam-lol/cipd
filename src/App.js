@@ -6,6 +6,7 @@ import IpdCp from "@/pages/IpdCp";
 import Blogs from "@/pages/Blogs";
 import BlogPost from "@/pages/BlogPost";
 import EventsPage from "@/pages/EventsPage";
+import EventDetail from "@/pages/EventDetail";
 import Login from "@/pages/Login";
 import AdminDashboard from "@/admin/AdminDashboard";
 import AdminBlogs from "@/admin/AdminBlogs";
@@ -33,6 +34,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/ipd-cp" element={<IpdCp />} />
           <Route path="/events" element={<EventsPage />} />
+          <Route path="/events/:id" element={<EventDetail />} />
           <Route path="/blogs" element={<Blogs />} />
           <Route path="/blogs/:slug" element={<BlogPost />} />
           <Route path="/login" element={<Login />} />
