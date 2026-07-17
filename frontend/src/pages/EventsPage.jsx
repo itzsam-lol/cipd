@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import Nav from "@/components/Nav";
 import Connect from "@/components/Connect";
@@ -96,29 +97,34 @@ export default function EventsPage() {
             </div>
             <motion.div
               id={`event-${featured.id}`}
-              data-testid={`event-featured-${featured.id}`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-              className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center scroll-mt-32"
+              className="scroll-mt-32"
             >
-              <div className="min-w-0">
-                <h2 className="font-display font-extrabold text-[28px] sm:text-[36px] leading-[1.1] tracking-[-0.02em] mb-4 break-words">
-                  {featured.title}
-                </h2>
-                <div className="text-[13px] text-ink-3 mb-1">{formatDate(featured.date)}</div>
-                {featured.location && (
-                  <div className="text-[13px] uppercase tracking-[0.18em] text-ink-3 mb-6">
-                    {featured.location}
-                  </div>
-                )}
-                {featured.description && (
-                  <p className="text-[15.5px] leading-[1.65] text-ink-2 max-w-[440px] mb-8 break-words">
-                    {featured.description}
-                  </p>
-                )}
-              </div>
-              <AccentPanel accent={featured.accent} title={featured.title} className="aspect-[16/10]" />
+              <Link
+                to={`/events/${featured.id}`}
+                data-testid={`event-featured-${featured.id}`}
+                className="group grid lg:grid-cols-2 gap-10 lg:gap-16 items-center"
+              >
+                <div className="min-w-0">
+                  <h2 className="font-display font-extrabold text-[28px] sm:text-[36px] leading-[1.1] tracking-[-0.02em] mb-4 break-words group-hover:underline">
+                    {featured.title}
+                  </h2>
+                  <div className="text-[13px] text-ink-3 mb-1">{formatDate(featured.date)}</div>
+                  {featured.location && (
+                    <div className="text-[13px] uppercase tracking-[0.18em] text-ink-3 mb-6">
+                      {featured.location}
+                    </div>
+                  )}
+                  {featured.description && (
+                    <p className="text-[15.5px] leading-[1.65] text-ink-2 max-w-[440px] mb-8 break-words">
+                      {featured.description}
+                    </p>
+                  )}
+                </div>
+                <AccentPanel accent={featured.accent} title={featured.title} className="aspect-[16/10]" />
+              </Link>
             </motion.div>
           </div>
         </section>
@@ -132,26 +138,31 @@ export default function EventsPage() {
                 <motion.div
                   key={e.id}
                   id={`event-${e.id}`}
-                  data-testid={`event-row-${e.id}`}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-60px" }}
                   transition={{ duration: 0.6, delay: (i % 2) * 0.08, ease: [0.16, 1, 0.3, 1] }}
-                  className="py-10 border-t first:sm:border-t-0 flex flex-col gap-5 scroll-mt-32 min-w-0"
+                  className="py-10 border-t first:sm:border-t-0 scroll-mt-32 min-w-0"
                   style={{ borderColor: "var(--border-soft)" }}
                 >
-                  <div>
-                    <h3 className="font-display font-bold text-[19px] leading-[1.25] tracking-[-0.01em] mb-3 break-words">
-                      {e.title}
-                    </h3>
-                    <div className="text-[12.5px] text-ink-3">{formatDate(e.date)}</div>
-                    {e.location && (
-                      <div className="text-[11px] uppercase tracking-[0.18em] text-ink-3 mt-1">
-                        {e.location}
-                      </div>
-                    )}
-                  </div>
-                  <AccentPanel accent={e.accent} title={e.title} className="aspect-[16/9]" />
+                  <Link
+                    to={`/events/${e.id}`}
+                    data-testid={`event-row-${e.id}`}
+                    className="group flex flex-col gap-5"
+                  >
+                    <div>
+                      <h3 className="font-display font-bold text-[19px] leading-[1.25] tracking-[-0.01em] mb-3 break-words group-hover:underline">
+                        {e.title}
+                      </h3>
+                      <div className="text-[12.5px] text-ink-3">{formatDate(e.date)}</div>
+                      {e.location && (
+                        <div className="text-[11px] uppercase tracking-[0.18em] text-ink-3 mt-1">
+                          {e.location}
+                        </div>
+                      )}
+                    </div>
+                    <AccentPanel accent={e.accent} title={e.title} className="aspect-[16/9]" />
+                  </Link>
                 </motion.div>
               ))}
             </div>

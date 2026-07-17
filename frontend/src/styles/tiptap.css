@@ -215,6 +215,16 @@
 .tt-medium-host .ProseMirror ol {
     padding-left: 1.5em;
     margin: 0 0 1.25em;
+    list-style-position: outside;
+}
+.tt-medium-host .ProseMirror ul {
+    list-style-type: disc;
+}
+.tt-medium-host .ProseMirror ol {
+    list-style-type: decimal;
+}
+.tt-medium-host .ProseMirror ul ul {
+    list-style-type: circle;
 }
 .tt-medium-host .ProseMirror li {
     margin: 0.35em 0;
@@ -519,6 +529,16 @@
 .blog-body .tt-ol {
     padding-left: 1.5em;
     margin: 0 0 1.3em;
+    list-style-position: outside;
+}
+.blog-body .tt-ul {
+    list-style-type: disc;
+}
+.blog-body .tt-ol {
+    list-style-type: decimal;
+}
+.blog-body .tt-ul .tt-ul {
+    list-style-type: circle;
 }
 .blog-body .tt-li {
     margin: 0.4em 0;

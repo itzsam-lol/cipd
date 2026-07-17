@@ -11,6 +11,7 @@ Routes:
 - /api/admin/blogs/{id}     — protected PUT, update
 - /api/admin/blogs/{id}     — protected DELETE
 - /api/events               — public, list events
+- /api/events/{id}          — public, single event
 - /api/admin/events         — protected CRUD
 - /api/announcements        — public, list active ticker headlines
 - /api/admin/announcements  — protected CRUD
@@ -448,6 +449,14 @@ async def delete_blog(request: Request, blog_id: str, user: dict = Depends(get_c
 async def list_events():
     cursor = db.events.find({}).sort("date", 1)
     return [serialize_doc(d) async for d in cursor]
+
+
+@api_router.get("/events/{event_id}")
+async def get_event_public(event_id: str):
+    doc = await db.events.find_one({"id": event_id})
+    if not doc:
+        raise HTTPException(status_code=404, detail="Event not found")
+    return serialize_doc(doc)
 
 
 @api_router.get("/admin/events")

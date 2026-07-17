@@ -80,7 +80,7 @@ export default function AdminEventEditor() {
         </Link>
         {!isNew && (
           <Link
-            to={`/events#event-${id}`}
+            to={`/events/${id}`}
             target="_blank"
             data-testid="preview-event-link"
             className="inline-flex items-center gap-2 text-[13px] text-ink-2 hover:text-ink"

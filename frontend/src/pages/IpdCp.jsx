@@ -221,7 +221,7 @@ export default function IpdCp() {
         title={
           <>
             Beyond the <br />
-            <span className="text-ink-3">simulation.</span>
+            <span className="accent-gradient-text">simulation.</span>
           </>
         }
       >

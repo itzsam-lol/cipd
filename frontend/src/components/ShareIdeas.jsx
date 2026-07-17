@@ -115,8 +115,8 @@ export default function ShareIdeas() {
               data-testid="share-submit"
               data-cursor="hover"
               disabled={sent || submitting}
-              className="group relative inline-flex items-center gap-3 rounded-full pl-8 pr-3 py-3 text-white text-[14px] font-medium overflow-hidden disabled:opacity-90"
-              style={{ background: "var(--ink)" }}
+              className="group relative inline-flex items-center gap-3 rounded-full pl-8 pr-3 py-3 text-[14px] font-medium overflow-hidden disabled:opacity-90"
+              style={{ background: "var(--ink)", color: "var(--bg)" }}
             >
               <span>
                 {sent ? "Got it, we'll be in touch" : submitting ? "Sending…" : "Send my idea"}
